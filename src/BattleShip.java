@@ -13,46 +13,83 @@ public class BattleShip {
 	static char[][] matrix = new char[DIMENSION][DIMENSION];
 	static boolean gameOver;
 	static int sunkShipCounter;
-	public static final int MAX_SHOTS=30;
+	public static final int MAX_SHOTS = 30;
 	static int remainingShots;
+	static char letter;
+	static int number;
+
 	public static void main(String[] args) {
 
-		char letter;
-		int number;
 		Scanner input = new Scanner(System.in);
 
 		gameOver = false;
 		sunkShipCounter = 0;
-		remainingShots=MAX_SHOTS;
+		remainingShots = MAX_SHOTS;
 		initMatrix();
 		addShipsToMatrix();
 
 		while (!gameOver) {
 			printMatrix(true);
-			System.out.println("Enter row (Letter):");
-			letter = input.next().toUpperCase().charAt(0);
-			System.out.println("Enter column (Number): ");
-			number = input.nextInt();
+			askCoordinates(input);
 			shoot(letter, number);
 			checkGameOver();
 
 		}
-		
+
 		showResult();
 
 	}
 
+	private static void askCoordinates(Scanner input) {
+		letter = '~';
+		boolean firstValue = true;
+		while (!letterInGoodRange(firstValue)) {
+			System.out.println("Enter row (Letter):");
+			letter = input.next().toUpperCase().charAt(0);
+		}
+		number = -1;
+		firstValue=true;
+		while (!numberInGoodRange(firstValue)) {
+			System.out.println("Enter column (Number): ");
+			number = input.nextInt();
+		}
+	}
+
+	private static boolean letterInGoodRange(boolean first) {
+		if (letter < 'A' || letter > ('A' + DIMENSION - 1)) {
+			if (!first) {
+				System.err.println("Letter nt in range");
+				System.out.println();
+			}
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private static boolean numberInGoodRange(boolean first) {
+		if (number < 1 || number > DIMENSION) {
+			if (!first) {
+				System.err.println("number not in range");
+				System.out.println();
+			}
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	private static void showResult() {
-		if(sunkShipCounter>=NUM_SHIPS) {
+		if (sunkShipCounter >= NUM_SHIPS) {
 			System.out.println("You Win!!!!");
-		}else {
+		} else {
 			System.out.println("No remaining shots");
 		}
-		
+
 	}
 
 	private static void checkGameOver() {
-		if (sunkShipCounter >= NUM_SHIPS || remainingShots<=0) {
+		if (sunkShipCounter >= NUM_SHIPS || remainingShots <= 0) {
 			gameOver = true;
 		}
 
